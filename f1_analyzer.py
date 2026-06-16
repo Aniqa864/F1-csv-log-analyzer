@@ -1,7 +1,7 @@
 import os
 import csv
 
-#Project configuration and file paths
+# Project configuration and file paths
 INPUT_RESULTS = "data/results.csv"
 INPUT_DRIVERS = "data/drivers.csv"
 OUTPUT_FILE = "output/f1_summary.txt"
@@ -34,5 +34,13 @@ def nationality_lookup(drivers):
     for row in drivers:
         lookup[row["driver_id"]] = row["nationality"]
     return lookup
+
+
+# Implementing a function to safely convert values to floats, returning a default value if conversion fails
+def safe_float(value, default=0.0):
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        return default
 
 
