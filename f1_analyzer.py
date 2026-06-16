@@ -26,3 +26,13 @@ def driver_lookup(drivers):
         full_name = row["givenName"] + " " + row["familyName"]
         lookup[driver_id] = full_name
     return lookup
+
+
+# Implementing a function to create a lookup dictionary for drivers based on their nationalities
+def nationality_lookup(drivers):
+    lookup = {}
+    for row in drivers:
+        lookup[row["driver_id"]] = row["nationality"]
+    return lookup
+
+
