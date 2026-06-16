@@ -44,3 +44,15 @@ def safe_float(value, default=0.0):
         return default
 
 
+def analyze(results, driver_lookup, nationality_lookup):
+
+    # Calculate total points for each driver
+    points_per_driver = {}
+    for row in results:
+        d_id = row["driver_id"]
+        pts  = safe_float(row["points"])
+        points_per_driver[d_id] = points_per_driver.get(d_id, 0.0) + pts
+
+    top_id     = max(points_per_driver, key=points_per_driver.get)
+    top_name   = driver_lookup.get(top_id, f"Driver #{top_id}")
+    top_points = round(points_per_driver[top_id], 1)
