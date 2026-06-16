@@ -56,3 +56,14 @@ def analyze(results, driver_lookup, nationality_lookup):
     top_id     = max(points_per_driver, key=points_per_driver.get)
     top_name   = driver_lookup.get(top_id, f"Driver #{top_id}")
     top_points = round(points_per_driver[top_id], 1)
+
+    # Calculate total wins for each driver
+    wins_per_driver = {}
+    for row in results:
+        if safe_int(row["position_order"]) == 1:
+            d_id = row["driver_id"]
+            wins_per_driver[d_id] = wins_per_driver.get(d_id, 0) + 1
+
+    most_wins_id    = max(wins_per_driver, key=wins_per_driver.get) if wins_per_driver else None
+    most_wins_name  = driver_lookup.get(most_wins_id, "Unknown") if most_wins_id else "Unknown"
+    most_wins_count = wins_per_driver.get(most_wins_id, 0)
