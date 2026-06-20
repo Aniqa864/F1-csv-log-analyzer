@@ -162,3 +162,5 @@ def write_report(stats, file_path):
         f.write("-" * 35 + "\n")
         f.write(f"Maximum recorded fastest lap speed: {stats['max_speed']}km/h\n")
         f.write(f"Average fastest lap speed         : {stats['avg_speed']}km/h\n")
+
+    print(f"Report written to {file_path}")
