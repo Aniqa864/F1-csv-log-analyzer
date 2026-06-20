@@ -143,3 +143,7 @@ def write_report(stats, file_path):
         f.write("=" * 45 + "\n")
         f.write("FORMULA 1 HISTORICAL DATA REPORT\n")
         f.write("=" * 45 + "\n\n")
+
+        f.write(f"Total race entries analyzed: {stats['total_entries']:,}\n")
+        f.write(f"Total races in dataset: {stats['total_races']:,}\n\n")
+        
