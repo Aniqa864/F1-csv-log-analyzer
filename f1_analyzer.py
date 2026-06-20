@@ -46,7 +46,7 @@ def safe_float(value, default=0.0):
         return default
 
 
-def analyze(results, driver_lookup, nationality_lookup):
+def analyze(results, driver_lookup):
 
     # Calculate total points for each driver
     points_per_driver = {}
