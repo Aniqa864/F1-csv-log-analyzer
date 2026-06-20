@@ -134,3 +134,9 @@ def analyze(results, driver_lookup, nationality_lookup):
         "max_speed": max_speed,
         "avg_speed": avg_speed,
     }
+
+
+def write_report(stats, file_path):
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+
