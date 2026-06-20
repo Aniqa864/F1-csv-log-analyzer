@@ -21,7 +21,7 @@ def read_csv(file_path):
 
 
 # Implementing a function to create a lookup dictionary for drivers based on their IDs
-def driver_lookup(drivers):
+def build_driver_lookup(drivers):
     lookup = {}
     for row in drivers:
         driver_id = row["driver_id"]
@@ -172,7 +172,7 @@ def main():
     results = read_csv(INPUT_RESULTS)
     drivers = read_csv(INPUT_DRIVERS)
 
-    driver_lookup = driver_lookup(drivers) 
+    driver_lookup = build_driver_lookup(drivers) 
     stats = analyze(results, driver_lookup)
     write_report(stats, OUTPUT_FILE)
 
