@@ -71,8 +71,8 @@ def analyze(results, driver_lookup):
             grid = int(row["grid"])
             finish = int(row["position_order"])
             if grid > 0 and finish > 0:
-                position_gains.append((grid - finish, row["driver_id"]))
-        except (ValueError, TypeError):
+                position_gains.append(grid - finish)
+        except (ValueError):
             pass
     
     avg_position_gain = round(sum(position_gains)/len(position_gains), 2) if position_gains else 0
