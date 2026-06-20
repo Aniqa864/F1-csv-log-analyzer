@@ -103,11 +103,15 @@ def analyze(results, driver_lookup, nationality_lookup):
         nationality_counts[name] = nationality_counts.get(name, 0) + 1
 
 
-    speed = []
+    # Calculate fastest lap speeds
+    speeds = []
     for row in results:
         try:
             speed = float(row["fastestLapSpeed"])
             if speed > 0:
                 speed.append(speed)
-        except (ValueError, TypeError):
+        except (ValueError):
             pass
+
+    max_speed = round(max(speeds),2) if speeds else 0
+    avg_speed = round(sum(speeds)/len(speeds),2) if speeds else 0
