@@ -85,6 +85,7 @@ def analyze(results, driver_lookup, nationality_lookup):
     avg_position_gain = round(sum(position_gains)/len(position_gains), 2) if position_gains else 0
 
 
+    # Calculate DNF (Did Not Finish) rate
     dnf_count = 0
     for row in results:
         pos = row["position"]
@@ -92,4 +93,12 @@ def analyze(results, driver_lookup, nationality_lookup):
             dnf_count += 1
 
     dnf_rate = round((dnf_count / len(results)) * 100, 1) if results else 0
-    
+
+
+    # Calculate nationality counts 
+    nationality_counts = {}
+    for row in results:
+        driver_id = row["driver_id"]
+        name = driver_lookup.get(driver_id, "Unknown")
+        nationality_counts[name] = nationality_counts.get(name, 0) + 1
+
