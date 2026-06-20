@@ -185,3 +185,7 @@ def main():
 
     print(f"\nDone! All-time points leader: {stats['top_driver_name']} "
           f"({stats['top_driver_points']} pts)")
+    
+
+if __name__ == "__main__":
+    main()
