@@ -46,7 +46,7 @@ def safe_int(value, default=0.0):
         return default
 
 
-def analyze(results, driver_lookup):
+def analyze(results, driver_lookup, nationality_lookup):
 
     # Calculate total points for each driver
     points_per_driver = {}
@@ -110,7 +110,7 @@ def analyze(results, driver_lookup):
     for row in results:
         if safe_int(row["position_order"]) == 1:
             d_id        = row["driver_id"]
-            nationality = build_nationality_lookup.get(d_id, "Unknown")
+            nationality = nationality_lookup.get(d_id, "Unknown")
             nationality_wins[nationality] = nationality_wins.get(nationality, 0) + 1
 
     top_nationality       = max(nationality_wins, key=nationality_wins.get) if nationality_wins else "Unknown"
