@@ -181,3 +181,4 @@ def main():
 
     driver_lookup = driver_lookup(drivers) 
     stats = analyze(results, driver_lookup)
+    write_report(stats, OUTPUT_FILE)
