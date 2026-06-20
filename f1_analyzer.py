@@ -136,6 +136,7 @@ def analyze(results, driver_lookup, nationality_lookup):
     }
 
 
+# Implementing a function to write the analysis report to a specified file path
 def write_report(stats, file_path):
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
@@ -164,3 +165,8 @@ def write_report(stats, file_path):
         f.write(f"Average fastest lap speed         : {stats['avg_speed']}km/h\n")
 
     print(f"Report written to {file_path}")
+
+
+def main():
+    print("Formula 1 CSV Log Analyzer")
+    print("-" * 35)
