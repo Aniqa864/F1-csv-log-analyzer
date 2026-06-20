@@ -31,7 +31,7 @@ def build_driver_lookup(drivers):
 
 
 # Implementing a function to create a lookup dictionary for drivers based on their nationalities
-def nationality_lookup(drivers):
+def build_nationality_lookup(drivers):
     lookup = {}
     for row in drivers:
         lookup[row["driver_id"]] = row["nationality"]
@@ -39,9 +39,9 @@ def nationality_lookup(drivers):
 
 
 # Implementing a function to safely convert values to floats, returning a default value if conversion fails
-def safe_float(value, default=0.0):
+def safe_int(value, default=0.0):
     try:
-        return float(value)
+        return int(value)
     except (ValueError, TypeError):
         return default
 
@@ -52,132 +52,167 @@ def analyze(results, driver_lookup):
     points_per_driver = {}
     for row in results:
         d_id = row["driver_id"]
-        try:
-            pts = float(row["points"])
-        except (ValueError):
-            pts = 0.0
-        points_per_driver[d_id] = points_per_driver.get(d_id, 0) + pts
+        pts  = safe_int(row["points"])
+        points_per_driver[d_id] = points_per_driver.get(d_id, 0.0) + pts
 
-    # Identify the driver with the most points
-    top_driver_id = max(points_per_driver, key=points_per_driver.get)
-    top_name = driver_lookup.get(top_driver_id, f"Driver #{top_driver_id}")
-    top_points = round(points_per_driver[top_driver_id], 1)
+    top_id     = max(points_per_driver, key=points_per_driver.get)
+    top_name   = driver_lookup.get(top_id, f"Driver #{top_id}")
+    top_points = round(points_per_driver[top_id], 1)
+
+    # Calculate total wins for each driver
+    wins_per_driver = {}
+    for row in results:
+        if safe_int(row["position_order"]) == 1:
+            d_id = row["driver_id"]
+            wins_per_driver[d_id] = wins_per_driver.get(d_id, 0) + 1
+
+    most_wins_id    = max(wins_per_driver, key=wins_per_driver.get) if wins_per_driver else None
+    most_wins_name  = driver_lookup.get(most_wins_id, "Unknown") if most_wins_id else "Unknown"
+    most_wins_count = wins_per_driver.get(most_wins_id, 0)
 
 
     # Calculate average position gain for each driver
     position_gains = []
     for row in results:
         try:
-            grid = int(row["grid"])
-            finish = int(row["position_order"])
+            grid = safe_int(row["grid"])
+            finish = safe_int(row["position_order"])
             if grid > 0 and finish > 0:
                 position_gains.append(grid - finish)
         except (ValueError):
             pass
     
-    avg_position_gain = round(sum(position_gains)/len(position_gains), 2) if position_gains else 0
+    avg_gain = round(sum(position_gains)/len(position_gains), 2) if position_gains else 0
 
 
     # Calculate DNF (Did Not Finish) rate
-    dnf_count = 0
-    for row in results:
-        pos = row["position"]
-        if pos in ("\\N", "0", ""):
-            dnf_count += 1
+    dnf_count = sum(
+        1 for row in results
+        if row["position"].strip() in ("\\N", "", "0")
+    )
 
     dnf_rate = round((dnf_count / len(results)) * 100, 1) if results else 0
 
 
-    # Calculate nationality counts 
-    nationality_counts = {}
+    # Calculate constructor wins
+    constructor_wins = {}
     for row in results:
-        driver_id = row["driver_id"]
-        name = driver_lookup.get(driver_id, "Unknown")
-        nationality_counts[name] = nationality_counts.get(name, 0) + 1
+        if safe_int(row["position_order"]) == 1:
+            c_id = row["constructor_id"]
+            constructor_wins[c_id] = constructor_wins.get(c_id, 0) + 1
+
+    top_constructor_id    = max(constructor_wins, key=constructor_wins.get) if constructor_wins else None
+    top_constructor_wins  = constructor_wins.get(top_constructor_id, 0)
 
 
-    # Calculate fastest lap speeds
-    speeds = []
+    # Calculate nationality wins
+    nationality_wins = {}
     for row in results:
-        try:
-            speed = float(row["fastestLapSpeed"])
-            if speed > 0:
-                speeds.append(speed)
-        except (ValueError):
-            pass
+        if safe_int(row["position_order"]) == 1:
+            d_id        = row["driver_id"]
+            nationality = build_nationality_lookup.get(d_id, "Unknown")
+            nationality_wins[nationality] = nationality_wins.get(nationality, 0) + 1
 
-    max_speed = round(max(speeds),2) if speeds else 0
-    avg_speed = round(sum(speeds)/len(speeds),2) if speeds else 0
+    top_nationality       = max(nationality_wins, key=nationality_wins.get) if nationality_wins else "Unknown"
+    top_nationality_wins  = nationality_wins.get(top_nationality, 0)
 
 
-    # Calculate total races in the dataset
-    race_ids = set()
-    for row in results:
-        race_ids.add(row["race_id"])
-    total_races = len(race_ids)
+    # Unique counts
+    total_races        = len(set(row["race_id"]    for row in results))
+    total_drivers      = len(set(row["driver_id"]  for row in results))
+    total_constructors = len(set(row["constructor_id"] for row in results))
+
+
+    # Average laps completed
+    laps = [safe_int(row["laps"]) for row in results if safe_int(row["laps"]) > 0]
+    avg_laps = round(sum(laps) / len(laps), 1) if laps else 0
 
     return {
-        "total_entries": len(results),
-        "total_races": total_races,
-        "top_driver_name": top_name,
-        "top_driver_points": top_points,
-        "avg_position_change": avg_position_gain,
-        "dnf_count" : dnf_count,
-        "dnf_rate": dnf_rate,
-        "max_speed": max_speed,
-        "avg_speed": avg_speed,
+        "total_entries"        : len(results),
+        "total_races"          : total_races,
+        "total_drivers"        : total_drivers,
+        "total_constructors"   : total_constructors,
+        "top_name"             : top_name,
+        "top_points"           : top_points,
+        "most_wins_name"       : most_wins_name,
+        "most_wins_count"      : most_wins_count,
+        "avg_gain"             : avg_gain,
+        "dnf_count"            : dnf_count,
+        "dnf_rate"             : dnf_rate,
+        "top_constructor_id"   : top_constructor_id,
+        "top_constructor_wins" : top_constructor_wins,
+        "top_nationality"      : top_nationality,
+        "top_nationality_wins" : top_nationality_wins,
+        "avg_laps"             : avg_laps,
     }
-
 
 # Implementing a function to write the analysis report to a specified file path
 def write_report(stats, file_path):
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
     with open(file_path, "w", encoding="utf-8") as f:
-        f.write("=" * 45 + "\n")
+        f.write("=" * 48 + "\n")
         f.write("FORMULA 1 HISTORICAL DATA REPORT\n")
-        f.write("=" * 45 + "\n\n")
+        f.write("1950 - 2025  | All Seasons\n")
+        f.write("=" * 48 + "\n\n")
 
-        f.write(f"Total race entries analyzed: {stats['total_entries']:,}\n")
-        f.write(f"Total races in dataset     : {stats['total_races']:,}\n\n")
-
-        f.write("PERFORMANCE HIGHLIGHTS:\n")
+        f.write("DATASET OVERVIEW\n")
         f.write("-" * 35 + "\n")
-        f.write(f"All-time points leader                : {stats['top_driver_name']}\n")
-        f.write(f"Their total points                    : {stats['top_driver_points']:,}\n")
-        f.write(f"Average grid to finish position change: {stats['avg_position_change']:+.2f}\n")
+        f.write(f"  Total race entries   : {stats['total_entries']:,}\n")
+        f.write(f"  Total races          : {stats['total_races']:,}\n")
+        f.write(f"  Unique drivers       : {stats['total_drivers']:,}\n")
+        f.write(f"  Unique constructors  : {stats['total_constructors']:,}\n\n")
 
-        f.write("RELIABILITY METRICS:\n")
+        f.write("DRIVER RECORDS\n")
         f.write("-" * 35 + "\n")
-        f.write(f"Total DNFs (Did Not Finish): {stats['dnf_count']:,}\n")
-        f.write(f"DNF rate                   : {stats['dnf_rate']}%\n\n")
+        f.write(f"  All-time points leader : {stats['top_name']}\n")
+        f.write(f"  Their total points     : {stats['top_points']:,}\n")
+        f.write(f"  Most race wins         : {stats['most_wins_name']}"
+                f" ({stats['most_wins_count']} wins)\n\n")
 
-        f.write("SPEED METRICS:\n")
+        f.write("RACE PERFORMANCE\n")
         f.write("-" * 35 + "\n")
-        f.write(f"Maximum recorded fastest lap speed: {stats['max_speed']}km/h\n")
-        f.write(f"Average fastest lap speed         : {stats['avg_speed']}km/h\n")
+        f.write(f"  Avg grid-to-finish change : {stats['avg_gain']:+.2f} places\n")
+        f.write(f"  Avg laps completed        : {stats['avg_laps']}\n\n")
+
+        f.write("RELIABILITY\n")
+        f.write("-" * 35 + "\n")
+        f.write(f"  Total DNFs  : {stats['dnf_count']:,}\n")
+        f.write(f"  DNF rate    : {stats['dnf_rate']}%\n\n")
+
+        f.write("CONSTRUCTOR & NATIONALITY\n")
+        f.write("-" * 35 + "\n")
+        f.write(f"  Most winning constructor ID : {stats['top_constructor_id']}"
+                f" ({stats['top_constructor_wins']} wins)\n")
+        f.write(f"  Most winning nationality    : {stats['top_nationality']}"
+                f" ({stats['top_nationality_wins']} wins)\n")
 
     print(f"Report written to {file_path}")
 
 
 def main():
-    print("Formula 1 CSV Log Analyzer")
-    print("-" * 35)
+    print("F1 CSV Log Analyzer — 1950 to 2025")
+    print("-" * 38)
 
-    for path in [INPUT_RESULTS, INPUT_DRIVERS]:
+    for path in (INPUT_RESULTS, INPUT_DRIVERS):
         if not os.path.exists(path):
-            print(f"Error: File not found - {path}")
+            print(f"  ERROR: Missing file → {path}")
             return
-        
+
     results = read_csv(INPUT_RESULTS)
     drivers = read_csv(INPUT_DRIVERS)
 
-    driver_lookup = build_driver_lookup(drivers) 
-    stats = analyze(results, driver_lookup)
+    driver_lookup      = build_driver_lookup(drivers)
+    nationality_lookup = build_nationality_lookup(drivers)
+
+    stats = analyze(results, driver_lookup, nationality_lookup)
     write_report(stats, OUTPUT_FILE)
 
-    print(f"\nDone! All-time points leader: {stats['top_driver_name']} "
-          f"({stats['top_driver_points']} pts)")
+    print(f"\n── Key results ──────────────────────")
+    print(f"  Points leader : {stats['top_name']} ({stats['top_points']} pts)")
+    print(f"  Most wins     : {stats['most_wins_name']} ({stats['most_wins_count']} wins)")
+    print(f"  DNF rate      : {stats['dnf_rate']}%")
+    print(f"  Report saved  : {OUTPUT_FILE}")
     
 
 if __name__ == "__main__":
