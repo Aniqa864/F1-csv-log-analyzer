@@ -139,4 +139,7 @@ def analyze(results, driver_lookup, nationality_lookup):
 def write_report(stats, file_path):
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
-
+    with open(file_path, "w", encoding="utf-8") as f:
+        f.write("=" * 45 + "\n")
+        f.write("FORMULA 1 HISTORICAL DATA REPORT\n")
+        f.write("=" * 45 + "\n\n")
