@@ -175,3 +175,6 @@ def main():
         if not os.path.exists(path):
             print(f"Error: File not found - {path}")
             return
+        
+    results = read_csv(INPUT_RESULTS)
+    drivers = read_csv(INPUT_DRIVERS)
