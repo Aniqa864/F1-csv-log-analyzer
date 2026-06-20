@@ -170,3 +170,8 @@ def write_report(stats, file_path):
 def main():
     print("Formula 1 CSV Log Analyzer")
     print("-" * 35)
+
+    for path in [INPUT_RESULTS, INPUT_DRIVERS]:
+        if not os.path.exists(path):
+            print(f"Error: File not found - {path}")
+            return
