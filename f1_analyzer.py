@@ -182,3 +182,6 @@ def main():
     driver_lookup = driver_lookup(drivers) 
     stats = analyze(results, driver_lookup)
     write_report(stats, OUTPUT_FILE)
+
+    print(f"\nDone! All-time points leader: {stats['top_driver_name']} "
+          f"({stats['top_driver_points']} pts)")
