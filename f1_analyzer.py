@@ -152,3 +152,9 @@ def write_report(stats, file_path):
         f.write(f"All-time points leader: {stats['top_driver_name']}\n")
         f.write(f"Their total points: {stats['top_driver_points']:,}\n")
         f.write(f"Average grid to finish position change: {stats['avg_position_change']:+.2f}\n")
+
+        f.write("RELIABILITY METRICS:\n")
+        f.write("-" * 35 + "\n")
+        f.write(f"Total DNFs (Did Not Finish): {stats['dnf_count']:,}\n")
+        f.write(f"DNF rate                   : {stats['dnf_rate']}%\n\n")
+        
