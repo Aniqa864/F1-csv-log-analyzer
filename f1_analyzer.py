@@ -178,3 +178,6 @@ def main():
         
     results = read_csv(INPUT_RESULTS)
     drivers = read_csv(INPUT_DRIVERS)
+
+    driver_lookup = driver_lookup(drivers) 
+    stats = analyze(results, driver_lookup)
