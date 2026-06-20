@@ -145,16 +145,20 @@ def write_report(stats, file_path):
         f.write("=" * 45 + "\n\n")
 
         f.write(f"Total race entries analyzed: {stats['total_entries']:,}\n")
-        f.write(f"Total races in dataset: {stats['total_races']:,}\n\n")
+        f.write(f"Total races in dataset     : {stats['total_races']:,}\n\n")
 
         f.write("PERFORMANCE HIGHLIGHTS:\n")
         f.write("-" * 35 + "\n")
-        f.write(f"All-time points leader: {stats['top_driver_name']}\n")
-        f.write(f"Their total points: {stats['top_driver_points']:,}\n")
+        f.write(f"All-time points leader                : {stats['top_driver_name']}\n")
+        f.write(f"Their total points                    : {stats['top_driver_points']:,}\n")
         f.write(f"Average grid to finish position change: {stats['avg_position_change']:+.2f}\n")
 
         f.write("RELIABILITY METRICS:\n")
         f.write("-" * 35 + "\n")
         f.write(f"Total DNFs (Did Not Finish): {stats['dnf_count']:,}\n")
         f.write(f"DNF rate                   : {stats['dnf_rate']}%\n\n")
-        
+
+        f.write("SPEED METRICS:\n")
+        f.write("-" * 35 + "\n")
+        f.write(f"Maximum recorded fastest lap speed: {stats['max_speed']}km/h\n")
+        f.write(f"Average fastest lap speed         : {stats['avg_speed']}km/h\n")
