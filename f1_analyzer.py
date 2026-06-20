@@ -115,3 +115,10 @@ def analyze(results, driver_lookup, nationality_lookup):
 
     max_speed = round(max(speeds),2) if speeds else 0
     avg_speed = round(sum(speeds)/len(speeds),2) if speeds else 0
+
+
+
+    race_ids = set()
+    for row in results:
+        race_ids.add(row["race_id"])
+    total_races = len(race_ids)
