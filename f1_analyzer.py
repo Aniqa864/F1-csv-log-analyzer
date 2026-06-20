@@ -102,3 +102,12 @@ def analyze(results, driver_lookup, nationality_lookup):
         name = driver_lookup.get(driver_id, "Unknown")
         nationality_counts[name] = nationality_counts.get(name, 0) + 1
 
+
+    speed = []
+    for row in results:
+        try:
+            speed = float(row["fastestLapSpeed"])
+            if speed > 0:
+                speed.append(speed)
+        except (ValueError, TypeError):
+            pass
