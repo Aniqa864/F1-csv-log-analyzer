@@ -1,6 +1,8 @@
 import os
 import csv
 
+from matplotlib.pyplot import grid
+
 # Project configuration and file paths
 INPUT_RESULTS = "data/results.csv"
 INPUT_DRIVERS = "data/drivers.csv"
@@ -10,7 +12,7 @@ OUTPUT_FILE = "output/f1_summary.txt"
 # Implementing a CSV reader function to load data from the specified file path
 def read_csv(file_path):
     row = []
-    with open(filepath, newline="", encoding="utf-8") as csvfile:
+    with open(file_path, newline="", encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
         for line in reader:
             row.append(line)
@@ -67,3 +69,16 @@ def analyze(results, driver_lookup, nationality_lookup):
     most_wins_id    = max(wins_per_driver, key=wins_per_driver.get) if wins_per_driver else None
     most_wins_name  = driver_lookup.get(most_wins_id, "Unknown") if most_wins_id else "Unknown"
     most_wins_count = wins_per_driver.get(most_wins_id, 0)
+
+
+    position_gains = []
+    for row in results:
+        try:
+            grid = int(row["grid"])
+            finish = int(row["position_order"])
+            if grid > 0 and finish > 0:
+                position_gains.append((grid - finish, row["driver_id"]))
+        except (ValueError, TypeError):
+            pass
+    
+    avg_position_gain = round(sum(position_gains)/len(position_gains), 2) if position_gains else 0.0
