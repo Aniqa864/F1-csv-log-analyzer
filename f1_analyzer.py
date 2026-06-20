@@ -71,6 +71,7 @@ def analyze(results, driver_lookup, nationality_lookup):
     most_wins_count = wins_per_driver.get(most_wins_id, 0)
 
 
+    # Calculate average position gain for each driver
     position_gains = []
     for row in results:
         try:
@@ -81,4 +82,14 @@ def analyze(results, driver_lookup, nationality_lookup):
         except (ValueError, TypeError):
             pass
     
-    avg_position_gain = round(sum(position_gains)/len(position_gains), 2) if position_gains else 0.0
+    avg_position_gain = round(sum(position_gains)/len(position_gains), 2) if position_gains else 0
+
+
+    dnf_count = 0
+    for row in results:
+        pos = row["position"]
+        if pos in ("\\N", "0", ""):
+            dnf_count += 1
+
+    dnf_rate = round((dnf_count / len(results)) * 100, 1) if results else 0
+    
