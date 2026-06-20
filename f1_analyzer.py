@@ -102,7 +102,7 @@ def analyze(results, driver_lookup):
         try:
             speed = float(row["fastestLapSpeed"])
             if speed > 0:
-                speed.append(speed)
+                speeds.append(speed)
         except (ValueError):
             pass
 
