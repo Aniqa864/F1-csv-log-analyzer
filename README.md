@@ -114,11 +114,3 @@ CONSTRUCTOR & NATIONALITY
 2. **Build Lookups** — maps `driver_id` to full names and nationalities for fast reference
 3. **Analyze** — computes points totals, wins, position gains, DNF rate, and other aggregate statistics
 4. **Report** — writes a formatted text report to `output/f1_summary.txt` and prints key highlights to the console
-
-## 📝 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](../../issues) if you want to contribute.
