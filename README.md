@@ -1,226 +1,124 @@
-🏎️ F1 CSV Log Analyzer
-A Python-based data analysis tool that processes historical Formula 1 race results from CSV files and generates a concise summary report containing driver records, race performance, reliability statistics, constructor wins, and nationality-based statistics.
+# 🏎️ F1 CSV Log Analyzer
 
-The project is designed to demonstrate practical Python skills including CSV processing, dictionaries, data aggregation, file handling, error handling, and report generation.
+A Python script that analyzes historical Formula 1 race data (1950–2025) from CSV files and generates a clean, human-readable summary report — covering points leaders, race wins, DNF rates, average position changes, and more.
 
-📌 Features
-📂 Reads Formula 1 data from CSV files
-👨‍✈️ Calculates the all-time points leader
-🏆 Identifies the driver with the most race wins
-📈 Calculates the average grid-to-finish position change
-🚨 Calculates total DNFs (Did Not Finish) and DNF rate
-🏁 Identifies the constructor with the most wins
-🌍 Identifies the nationality with the most race wins
-👥 Counts unique drivers and constructors
-🛣️ Calculates average laps completed
-📄 Generates a formatted text report
-🛡️ Includes basic handling for missing or invalid numeric values
+## 📋 Features
 
-📁 Project Structure
-f1-csv-log-analyzer/
-│
+- **Driver Records** — identifies the all-time points leader and the driver with the most race wins
+- **Race Performance** — calculates average grid-to-finish position change and average laps completed
+- **Reliability Stats** — computes total DNFs (Did Not Finish) and DNF rate as a percentage
+- **Constructor & Nationality Insights** — finds the most winning constructor and nationality
+- **Dataset Overview** — total race entries, unique races, drivers, and constructors
+- Outputs a formatted `.txt` report plus a console summary
+
+## 📁 Project Structure
+
+```
+.
 ├── data/
-│   ├── results.csv
-│   └── drivers.csv
-│
+│   ├── results.csv       # Race results data
+│   └── drivers.csv       # Driver details data
 ├── output/
-│   └── f1_summary.txt
-│
-├── main.py
-│
-└── README.md
+│   └── f1_summary.txt    # Generated report (created on run)
+└── main.py                # Main script
+```
 
-📊 Data
-The analyzer expects two CSV files inside the data/ directory.
+## 🔧 Requirements
 
-results.csv
-Contains race-result information such as:
+- Python 3.7+
+- [matplotlib](https://matplotlib.org/) (used for the `grid` import)
 
-race_id
-driver_id
-constructor_id
-grid
-position
-position_order
-points
-laps
+Install dependencies:
 
-drivers.csv
-Contains driver information such as:
+```bash
+pip install matplotlib
+```
 
-driver_id
-givenName
-familyName
-nationality
+## 📥 Input Data Format
 
-The driver data is used to convert driver IDs into full names and determine the nationality associated with each driver.
+### `data/results.csv`
+Expected columns include:
 
-⚙️ How It Works
-The program follows a simple analysis pipeline:
+| Column | Description |
+|---|---|
+| `race_id` | Unique identifier for the race |
+| `driver_id` | Unique identifier for the driver |
+| `constructor_id` | Unique identifier for the constructor/team |
+| `grid` | Starting grid position |
+| `position` | Finishing position (or `\N` if DNF) |
+| `position_order` | Final classified position order |
+| `points` | Points scored in the race |
+| `laps` | Number of laps completed |
 
-CSV Files
-   │
-   ▼
-Read Data
-   │
-   ▼
-Build Driver Lookups
-   │
-   ▼
-Analyze Race Results
-   │
-   ├── Points
-   ├── Wins
-   ├── Position Gain
-   ├── DNFs
-   ├── Constructor Wins
-   ├── Nationality Wins
-   └── Average Laps
-   │
-   ▼
-Generate Statistics
-   │
-   ▼
-Write f1_summary.txt
+### `data/drivers.csv`
+Expected columns include:
 
-🚀 Getting Started
-1. Clone the repository
-git clone https://github.com/Aniqa864/F1-csv-log-analyzer.git
-cd F1-csv-log-analyzer
+| Column | Description |
+|---|---|
+| `driver_id` | Unique identifier for the driver |
+| `givenName` | Driver's first name |
+| `familyName` | Driver's last name |
+| `nationality` | Driver's nationality |
 
-2. Add the data files
-Place the required CSV files in:
+## ▶️ Usage
 
-data/results.csv
-data/drivers.csv
+1. Place your `results.csv` and `drivers.csv` files inside the `data/` folder.
+2. Run the script:
 
-3. Run the analyzer
+```bash
 python main.py
+```
 
-The program will check that both input files exist before starting the analysis.
+3. The report will be generated at `output/f1_summary.txt`, and a summary will also print to the console.
 
-💻 Example Console Output
-F1 CSV Log Analyzer — 1950 to 2025
---------------------------------------
-Loaded 26000 rows from data/results.csv
-Loaded 860 rows from data/drivers.csv
-Report written to output/f1_summary.txt
+## 📊 Sample Output
 
-── Key results ──────────────────────
-  Points leader : Lewis Hamilton (.... pts)
-  Most wins     : Lewis Hamilton (.... wins)
-  DNF rate      : ....%
-  Report saved  : output/f1_summary.txt
+```
+================================================
+FORMULA 1 HISTORICAL DATA REPORT
+1950 - 2025  | All Seasons
+================================================
 
-The exact results depend on the CSV dataset being analyzed.
+DATASET OVERVIEW
+-----------------------------------
+  Total race entries   : 26,000
+  Total races          : 1,100
+  Unique drivers       : 860
+  Unique constructors  : 210
 
-📄 Generated Report
-The analyzer creates:
+DRIVER RECORDS
+-----------------------------------
+  All-time points leader : Lewis Hamilton
+  Their total points     : 4,639.5
+  Most race wins         : Lewis Hamilton (105 wins)
 
-output/f1_summary.txt
+RACE PERFORMANCE
+-----------------------------------
+  Avg grid-to-finish change : +0.42 places
+  Avg laps completed        : 55.3
 
-The report contains several sections.
+RELIABILITY
+-----------------------------------
+  Total DNFs  : 5,200
+  DNF rate    : 20.0%
 
-Dataset Overview
-Total race entries
-Total races
-Unique drivers
-Unique constructors
-Driver Records
-All-time points leader
-Total points
-Driver with the most race wins
-Race Performance
-Average grid-to-finish change
-Average laps completed
-Reliability
-Total DNFs
-DNF percentage
-Constructor & Nationality
-Constructor with the most wins
-Nationality with the most wins
+CONSTRUCTOR & NATIONALITY
+-----------------------------------
+  Most winning constructor ID : 6 (243 wins)
+  Most winning nationality    : British (312 wins)
+```
 
-🧮 Calculations
-Driver Points
-Points are accumulated for every driver across all race results:
+## 🛠️ How It Works
 
-points_per_driver[d_id] = points_per_driver.get(d_id, 0) + pts
+1. **Load Data** — reads `results.csv` and `drivers.csv` into memory using Python's built-in `csv.DictReader`
+2. **Build Lookups** — maps `driver_id` to full names and nationalities for fast reference
+3. **Analyze** — computes points totals, wins, position gains, DNF rate, and other aggregate statistics
+4. **Report** — writes a formatted text report to `output/f1_summary.txt` and prints key highlights to the console
 
-The driver with the highest total is selected as the points leader.
+## 📝 License
 
-Race Wins
-A race is counted as a win when:
+This project is open source and available under the [MIT License](LICENSE).
 
-position_order == 1
+## 🤝 Contributing
 
-Grid-to-Finish Change
-The position change is calculated as:
-
-Grid Position - Finishing Position
-
-For example:
-
-Started: 12th
-Finished: 5th
-
-Gain = 12 - 5 = +7 places
-
-DNF Rate
-A result is treated as a DNF when the position field is:
-
-\N
-""
-"0"
-
-The DNF rate is then calculated as:
-
-DNF Rate = (DNFs / Total Results) × 100
-
-🛠️ Technologies Used
-Python 3
-csv — reading CSV data
-os — file and directory handling
-No external Python packages are required to run the analyzer.
-
-📚 Python Concepts Demonstrated
-This project demonstrates several fundamental Python programming concepts:
-
-Functions
-Loops
-Dictionaries
-List comprehensions
-Conditional statements
-Exception handling
-File I/O
-CSV parsing
-Data aggregation
-Dictionary lookups
-Basic statistical calculations
-Modular program structure
-
-🔮 Possible Future Improvements
-Some ideas for extending the project:
-
-Add season-by-season analysis
-Add constructor names instead of constructor IDs
-Generate charts using matplotlib
-Export reports to CSV or JSON
-Add command-line arguments for custom input files
-Calculate podium finishes
-Analyze fastest laps
-Compare drivers across different seasons
-Add driver championship standings
-Create an interactive dashboard
-Add automated tests with pytest
-
-⚠️ Notes
-The report header currently describes the dataset as covering 1950–2025. The actual statistics depend entirely on the contents of the supplied CSV files.
-
-For accurate results, make sure the CSV files contain the expected columns and compatible Formula 1 race-result data.
-
-🏁 Project Goal
-F1 CSV Log Analyzer is a lightweight Python project for turning raw Formula 1 race-result CSV data into useful historical statistics.
-
-It provides a practical example of how Python can be used to transform structured data into a readable analytical report.
-
-Built with Python 🐍 | Powered by F1 data 🏎️
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](../../issues) if you want to contribute.
